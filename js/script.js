@@ -17,11 +17,11 @@ class NodeElement {
     createElement() {
         this.element = $(`
             <div class="node" id="node-${this.id}" data-id="${this.id}">
-                <div class="button button-1" onclick="addNode(event, 1)"><div>1</div></div>
-                <div class="button button-2" onclick="addNode(event, 2)"><div>2</div></div>
-                <div class="button button-3" onclick="addNode(event, 3)"><div>3</div></div>
-                <div class="button button-4" onclick="addNode(event, 4)"><div>4</div></div>
-                <button class="control-button control-button-x">x</button>
+                <div class="button button-1" onclick="addNode(${this.id}, 1)"><div>1</div></div>
+                <div class="button button-2" onclick="addNode(${this.id}, 2)"><div>2</div></div>
+                <div class="button button-3" onclick="addNode(${this.id}, 3)"><div>3</div></div>
+                <div class="button button-4" onclick="addNode(${this.id}, 4)"><div>4</div></div>
+                <button class="control-button control-button-x" onclick="deleteNode(${this.id})">x</button>
                 <button class="control-button control-button-e">e</button>
             </div>`);
 
@@ -186,9 +186,8 @@ class Lines {
     }
 }
 
-function addNode(e, button) {
-    let nodeElement = $(e.target).parent().parent(),
-        node = nodes.getItem(nodeElement.data('id'));
+function addNode(nodeID, button) {
+    let node = nodes.getItem(nodeID);
 
     if (node.relations[button].nodeID !== null) {
         return;
@@ -222,6 +221,10 @@ function addNode(e, button) {
     nodes.add(newNode);
 
     lines.add(new Line(lines.nextID, node, button, newNode, buttonRelations[button]));
+}
+
+function deleteNode(nodeID) {
+    let node = nodes.getItem(nodeID);
 }
 
 const offset = 150;
