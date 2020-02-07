@@ -38,6 +38,10 @@ body {
     display: block;
 }
 
+.node:hover .control-button {
+    display: block;
+}
+
 .button {
     width: 40px;
     height: 40px;
@@ -85,4 +89,22 @@ body {
 
 .button-4 {
     border-bottom-right-radius: 100%;
+}
+
+.control-button {
+    transform: rotate(-45deg);
+    position: absolute;
+    z-index: 3;
+    display: none;
+    cursor: pointer;
+}
+
+.control-button-x {
+    left: -15px;
+    top: 70px;
+}
+
+.control-button-e {
+    top: -15px;
+    right: -12px;
 }
