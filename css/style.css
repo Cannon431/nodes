@@ -33,6 +33,10 @@ body {
     cursor: pointer;
 }
 
+.node.dragging {
+    border: 1px solid blue;
+}
+
 .node .buttons {
     position: absolute;
     transform: rotate(45deg);

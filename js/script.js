@@ -30,8 +30,10 @@ class NodeElement {
         let self = this;
         this.element.draggable({
             start() {
+                self.element.addClass('dragging');
                 self.element.find('.button').hide();
             },
+
             drag() {
                 self.left = $(this).css('left');
                 self.top = $(this).css('top');
@@ -40,6 +42,7 @@ class NodeElement {
             },
 
             stop() {
+                self.element.removeClass('dragging');
                 self.element.find('.button').show();
             }
         }).css('position', 'absolute');
@@ -138,11 +141,13 @@ class Line {
             .attr({id: 'line-' + this.id});
         this.updateCoordinates();
 
+        this.element.hide();
         $('#lines').append(this.element);
+        this.element.fadeIn(500);
     }
 
     removeElement() {
-        this.element.remove();
+        this.element.fadeOut(500, () => this.element.remove());
     }
 
     getX(button, node) {
