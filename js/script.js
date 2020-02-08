@@ -16,14 +16,14 @@ class NodeElement {
 
     createElement() {
         this.element = $(`
-            <div class="node" id="node-${this.id}" data-id="${this.id}">
+            <div class="node" id="node-${this.id}" data-id="${this.id}" oncontextmenu="removeNode(${this.id});return false;">
                 <div class="buttons">
                     <div class="button button-1" onclick="addNode(${this.id}, 1)"><div>1</div></div>
                     <div class="button button-2" onclick="addNode(${this.id}, 2)"><div>2</div></div>
                     <div class="button button-3" onclick="addNode(${this.id}, 3)"><div>3</div></div>
                     <div class="button button-4" onclick="addNode(${this.id}, 4)"><div>4</div></div>
                 </div>
-                <button class="control-button control-button-x" onclick="deleteNode(${this.id})">x</button>
+                <button class="control-button control-button-x" onclick="removeNode(${this.id})">x</button>
                 <button class="control-button control-button-e">e</button>
             </div>`);
 
@@ -31,7 +31,7 @@ class NodeElement {
         this.element.draggable({
             start() {
                 self.element.addClass('dragging');
-                self.element.find('.button').hide();
+                self.element.find('.buttons').hide();
             },
 
             drag() {
@@ -43,7 +43,7 @@ class NodeElement {
 
             stop() {
                 self.element.removeClass('dragging');
-                self.element.find('.button').show();
+                self.element.find('.buttons').show();
             }
         }).css('position', 'absolute');
 
@@ -253,7 +253,7 @@ function addNode(nodeID, button) {
     lines.add(new Line(lines.nextID, node, button, newNode, buttonRelations[button]));
 }
 
-function deleteNode(nodeID) {
+function removeNode(nodeID) {
     if (nodes.items.length < 2) {
         alert('Нельзя удалить единственный узел');
 
@@ -282,6 +282,8 @@ function deleteNode(nodeID) {
         return true;
     });
 }
+
+$(document).on('contextmenu', e => e.preventDefault());
 
 const offset = 150;
 
