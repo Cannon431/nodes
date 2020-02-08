@@ -5,7 +5,7 @@
 body {
     padding: 0;
     margin: 0;
-    background-color: black;
+    background-color: #171717;
 }
 
 #lines {
@@ -34,7 +34,7 @@ body {
 }
 
 .node.dragging {
-    border: 1px solid blue;
+    border: 1px solid #960008;
 }
 
 .node .buttons {
@@ -54,18 +54,19 @@ body {
     width: 40px;
     height: 40px;
     float: left;
-    border: 2px solid white;
+    border: 1px solid #171717;
     box-sizing: border-box;
     text-align: center;
     line-height: 40px;
     user-select: none;
     cursor: pointer;
-    background-color: limegreen;
+    background-color: #e3e3e3;
     display: none;
 }
 
 .button.related {
-    background-color: red;
+    background-color: #960008;
+    color: white;
 }
 
 .button:hover {
@@ -100,20 +101,23 @@ body {
 }
 
 .control-button {
+    top: 30px;
     position: absolute;
     z-index: 3;
     display: none;
     cursor: pointer;
-    padding: 0;
-    margin: 0;
+    background: #e3e3e3;
+    border: 0;
+    outline: none;
+    width: 22px;
+    height: 22px;
+    padding: 4px;
 }
 
 .control-button-x {
-    left: -50px;
-    top: 30px;
+    left: -30px;
 }
 
 .control-button-e {
-    right: -50px;
-    top: 30px;
+    right: -30px;
 }

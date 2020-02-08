@@ -32,6 +32,8 @@ class NodeElement {
             start() {
                 self.element.addClass('dragging');
                 self.element.find('.buttons').hide();
+                self.element.find('.control-button').hide();
+                self.element.find('.control-button').hide();
             },
 
             drag() {
@@ -44,6 +46,13 @@ class NodeElement {
             stop() {
                 self.element.removeClass('dragging');
                 self.element.find('.buttons').show();
+                self.element.find('.control-button').show();
+                self.element.find('.control-button').attr('style', '');
+
+                self.left = $(this).css('left');
+                self.top = $(this).css('top');
+
+                lines.updateCoordinates();
             }
         }).css('position', 'absolute');
 
