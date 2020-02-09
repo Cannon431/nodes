@@ -23,7 +23,7 @@ class NodeElement {
                     <div class="button button-3" onclick="addNode(${this.id}, 3)"><div>3</div></div>
                     <div class="button button-4" onclick="addNode(${this.id}, 4)"><div>4</div></div>
                 </div>
-                <button class="control-button control-button-x" onclick="removeNode(${this.id})">x</button>
+                <button class="control-button control-button-x" onclick="removeNode(${this.id})">&times;</button>
                 <button class="control-button control-button-e">e</button>
             </div>`);
 
@@ -66,7 +66,7 @@ class NodeElement {
     }
 
     getButton(number) {
-        return $(this.element.find('.buttons').children()[number - 1]);
+        return this.element.find('.buttons').children().eq(number - 1);
     }
 
     get left() {
@@ -163,9 +163,9 @@ class Line {
         switch (button) {
             case 1:
             case 4:
-                return node.left + node.element.width() / 2;
+                return node.left + node.element.outerWidth() / 2;
             case 2:
-                return node.left +node.element.width();
+                return node.left +node.element.outerWidth();
             case 3:
                 return node.left;
         }
@@ -177,9 +177,9 @@ class Line {
                 return node.top;
             case 2:
             case 3:
-                return node.top + node.element.height() / 2;
+                return node.top + node.element.outerHeight() / 2;
             case 4:
-                return node.top + node.element.height();
+                return node.top + node.element.outerHeight();
         }
     }
 
@@ -223,6 +223,19 @@ class Lines {
     updateCoordinates() {
         this.items.forEach(item => item.updateCoordinates());
     }
+}
+
+function changeMode(e) {
+    isPresentationMode = !isPresentationMode;
+
+    if (isPresentationMode) {
+        $(e.target).html('Edit mode');
+    } else {
+        $(e.target).html('Presentation mode');
+    }
+
+    $('#edit-mode').toggle();
+    $('#presentation-mode').toggle();
 }
 
 function addNode(nodeID, button) {
@@ -293,6 +306,9 @@ function removeNode(nodeID) {
 }
 
 $(document).on('contextmenu', e => e.preventDefault());
+
+let isPresentationMode = true;
+$('#edit-mode').hide();
 
 const offset = 150;
 
