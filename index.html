@@ -29,10 +29,16 @@
     <p><input type="text" id="node-relation-4" placeholder="Relation 4"></p>
 </div>
 
-<div id="presentation-mode"></div>
-<script>
-    $('#node-title').ckeditor();
-</script>
+<div id="presentation-mode">
+    <div id="presentation-mode-title">Lorem ipsum dolor sit amet</div>
+    <div id="presentation-mode-buttons">
+        <button id="to-relation-1" onclick="nextNode(1)">To relation 1</button>
+        <button id="to-relation-2" onclick="nextNode(2)">To relation 2</button>
+        <button id="to-relation-3" onclick="nextNode(3)">To relation 3</button>
+        <button id="to-relation-4" onclick="nextNode(4)">To relation 4</button>
+    </div>
+    
+</div>
 <script src="js/script.js"></script>
 </body>
 </html>

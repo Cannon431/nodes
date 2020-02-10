@@ -142,11 +142,38 @@ body {
     text-align: center;
 }
 
-#node-title {
-    width: 90%;
-    height: 120px;
-}
 
 #node-relation-1, #node-relation-2, #node-relation-3, #node-relation-4 {
     width: 90%;
-} 
+}
+
+#presentation-mode {
+    border: 1px solid #e3e3e3;
+    color: #e3e3e3;
+    width: 800px;
+    min-height: 400px;
+    margin: 50px auto;
+    padding: 15px;
+}
+
+#presentation-mode-title {
+    color: #e3e3e3;
+    margin-bottom: 20px;
+    height: 300px;
+}
+
+#presentation-mode-buttons {
+    text-align: center;
+    height: 100px;
+}
+
+#to-relation-1, #to-relation-2, #to-relation-3, #to-relation-4 {
+    background-color: #E3E3E3;
+    color: #171717;
+    border: none;
+    border-radius: 3px;
+    padding: 5px;
+    width: 130px;
+    height: 30px;
+    cursor: pointer;
+}

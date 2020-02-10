@@ -233,9 +233,12 @@ function changeMode(e) {
     isDesignMode = !isDesignMode;
 
     if (isDesignMode) {
+        // Меняем на режим design
         $(e.target).html('Presentation mode');
     } else {
+        // Меняем на режим просмотра
         $(e.target).html('Design mode');
+        updatePresentationWindow();
     }
 
     $('#design-mode').toggle();
@@ -293,7 +296,7 @@ function removeNode(nodeID) {
         for (let button in item.relations) {
             if (item.relations[button].nodeID === nodeID) {
                 item.relations[button].nodeID = null;
-                item.relations[button].title = null;
+                item.relations[button].title = '';
                 item.getButton(button).removeClass('related');
             }
         }
@@ -308,11 +311,13 @@ function removeNode(nodeID) {
 
         return true;
     });
+
+    viewingNode = nodes.items[0];
 }
 
 function openEditor(nodeID) {
     let node = nodes.get(nodeID);
-    editingNodeID = nodeID;
+    editingNode = node;
 
     $('#node-title').val(node.title);
  
@@ -328,39 +333,59 @@ function openEditor(nodeID) {
     $('#edit-dialog').dialog('open');
 }
 
-//$(document).on('contextmenu', e => e.preventDefault());
+function nextNode(button) {
+    viewingNode = nodes.get(viewingNode.relations[button].nodeID);
+    updatePresentationWindow();
+}
+
+function updatePresentationWindow() {
+    $('#presentation-mode-title').html(`Node with id ${viewingNode.id} ${viewingNode.title}`);
+    
+    for (let button in viewingNode.relations) {
+        let buttonElement = $(`#to-relation-${button}`),
+            relation = viewingNode.relations[button];
+
+        if (relation.nodeID === null) {
+            buttonElement.hide();
+        } else {
+
+            buttonElement.html(`Relation ${button}` + (relation.title !== '' ? ` - ${relation.title}`: ''));
+            buttonElement.show();
+        }
+    }
+}
+
+$(document).on('contextmenu', e => e.preventDefault());
+$('#presentation-mode').hide();
+$('#node-title').ckeditor();
 $('#edit-dialog').dialog({
     width: 900,
     resizable: false,
     autoOpen: false,
     draggable: false,
-    modal: true,
     buttons: [
         {
             text: 'OK',
             click() {
-                let node = nodes.get(editingNodeID);
-
-                node.title = $('#node-title').val();
-                for (let button in node.relations) {
-                    if (node.relations[button].nodeID !== null) {
-                        node.relations[button].title = $(`#node-relation-${button}`).val();
+                editingNode.title = $('#node-title').val();
+                for (let button in editingNode.relations) {
+                    if (editingNode.relations[button].nodeID !== null) {
+                        editingNode.relations[button].title = $(`#node-relation-${button}`).val();
                     }
                 }
 
-                editingNodeID = null;
+                editingNode = null;
                 $(this).dialog('close');
             }
         }
     ]
 });
 
-let editingNodeID = null;
 let isDesignMode = true;
-$('#presentation-mode').hide();
 
 const offset = 150;
 
-let nodes = new NodesCollection(),
-    lines = new LinesCollection();
+let nodes = new NodesCollection(), lines = new LinesCollection();
 nodes.add(new NodeItem(nodes.nextID, 670, 300));
+
+let editingNode = null, viewingNode = nodes.items[0];
