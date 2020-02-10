@@ -16,7 +16,7 @@ body {
     background-color: #E3E3E3;
     color: #171717;
     border: none;
-    border-radius: 10px;
+    border-radius: 7px;
     outline: none;
     cursor: pointer;
     padding: 5px;
@@ -138,6 +138,15 @@ body {
     right: -30px;
 }
 
-#edit-mode {
-    color: #E3E3E3;
+#edit-dialog {
+    text-align: center;
 }
+
+#node-title {
+    width: 90%;
+    height: 120px;
+}
+
+#node-relation-1, #node-relation-2, #node-relation-3, #node-relation-4 {
+    width: 90%;
+} 

@@ -1,12 +1,16 @@
-class NodeElement {
-    constructor(id, left = 0, top = 0) {
+'use strict';
+
+class NodeItem {
+    title = '';
+    relations = {
+        1: {nodeID: null, title: ''},
+        2: {nodeID: null, title: ''},
+        3: {nodeID: null, title: ''},
+        4: {nodeID: null, title: ''}
+    };
+
+    constructor(id, left, top) {
         this.id = id;
-        this.relations = {
-            1: {nodeID: null},
-            2: {nodeID: null},
-            3: {nodeID: null},
-            4: {nodeID: null}
-        };
 
         this.createElement();
 
@@ -24,9 +28,17 @@ class NodeElement {
                     <div class="button button-4" onclick="addNode(${this.id}, 4)"><div>4</div></div>
                 </div>
                 <button class="control-button control-button-x" onclick="removeNode(${this.id})">&times;</button>
-                <button class="control-button control-button-e">e</button>
+                <button class="control-button control-button-e" onclick="openEditor(${this.id})">e</button>
             </div>`);
 
+        this.makeDraggable();
+
+        this.element.hide();
+        $('#nodes').append(this.element);
+        this.element.fadeIn();
+    }
+
+    makeDraggable() {
         let self = this;
         this.element.draggable({
             start() {
@@ -55,10 +67,6 @@ class NodeElement {
                 lines.updateCoordinates();
             }
         }).css('position', 'absolute');
-
-        this.element.hide();
-        $('#nodes').append(this.element);
-        this.element.fadeIn();
     }
 
     removeElement() {
@@ -100,18 +108,16 @@ class NodeElement {
     }
 }
 
-class Nodes {
-    constructor() {
-        this.items = [];
-        this.nextID = 0;
-    }
+class NodesCollection {
+    items = [];
+    nextID = 0;
 
     add(item) {
         this.items.push(item);
         this.nextID++;
     }
 
-    getItem(id) {
+    get(id) {
         let item = this.items.find(item => item.id === id);
 
         if (item === undefined) {
@@ -121,7 +127,7 @@ class Nodes {
         return item;
     }
 
-    removeItem(id) {
+    remove(id) {
         let itemIndex = this.items.findIndex(item => item.id === id);
 
         if (itemIndex === -1) {
@@ -132,7 +138,7 @@ class Nodes {
     }
 }
 
-class Line {
+class LineItem {
     constructor(id, nodeFrom, buttonFrom, nodeTo, buttonTo) {
         this.id = id;
 
@@ -209,11 +215,9 @@ class Line {
     }
 }
 
-class Lines {
-    constructor() {
-        this.items = [];
-        this.nextID = 0;
-    }
+class LinesCollection {
+    items = [];
+    nextID = 0;
 
     add(item) {
         this.items.push(item);
@@ -226,20 +230,20 @@ class Lines {
 }
 
 function changeMode(e) {
-    isPresentationMode = !isPresentationMode;
+    isDesignMode = !isDesignMode;
 
-    if (isPresentationMode) {
-        $(e.target).html('Edit mode');
-    } else {
+    if (isDesignMode) {
         $(e.target).html('Presentation mode');
+    } else {
+        $(e.target).html('Design mode');
     }
 
-    $('#edit-mode').toggle();
+    $('#design-mode').toggle();
     $('#presentation-mode').toggle();
 }
 
 function addNode(nodeID, button) {
-    let node = nodes.getItem(nodeID);
+    let node = nodes.get(nodeID);
 
     if (node.relations[button].nodeID !== null) {
         return;
@@ -256,7 +260,7 @@ function addNode(nodeID, button) {
         top += offset;
     }
 
-    let newNode = new NodeElement(nodes.nextID, left, top);
+    let newNode = new NodeItem(nodes.nextID, left, top);
 
     node.addRelation(button, newNode.id);
     node.getButton(button).addClass('related');
@@ -272,23 +276,24 @@ function addNode(nodeID, button) {
     newNode.getButton(buttonRelations[button]).addClass('related');
     nodes.add(newNode);
 
-    lines.add(new Line(lines.nextID, node, button, newNode, buttonRelations[button]));
+    lines.add(new LineItem(lines.nextID, node, button, newNode, buttonRelations[button]));
 }
 
 function removeNode(nodeID) {
     if (nodes.items.length < 2) {
-        alert('Нельзя удалить единственный узел');
+        alert('Single node cannot be deleted');
 
         return;
     }
 
-    let node = nodes.removeItem(nodeID);
+    let node = nodes.remove(nodeID);
     node.removeElement();
 
     nodes.items.forEach(item => {
         for (let button in item.relations) {
             if (item.relations[button].nodeID === nodeID) {
                 item.relations[button].nodeID = null;
+                item.relations[button].title = null;
                 item.getButton(button).removeClass('related');
             }
         }
@@ -305,13 +310,57 @@ function removeNode(nodeID) {
     });
 }
 
-$(document).on('contextmenu', e => e.preventDefault());
+function openEditor(nodeID) {
+    let node = nodes.get(nodeID);
+    editingNodeID = nodeID;
 
-let isPresentationMode = true;
-$('#edit-mode').hide();
+    $('#node-title').val(node.title);
+ 
+    for (let button in node.relations) {
+        if (node.relations[button].nodeID === null) {
+            $(`#node-relation-${button}`).hide();
+        } else {
+            $(`#node-relation-${button}`).val(node.relations[button].title);
+            $(`#node-relation-${button}`).show();
+        }
+    }
+
+    $('#edit-dialog').dialog('open');
+}
+
+//$(document).on('contextmenu', e => e.preventDefault());
+$('#edit-dialog').dialog({
+    width: 900,
+    resizable: false,
+    autoOpen: false,
+    draggable: false,
+    modal: true,
+    buttons: [
+        {
+            text: 'OK',
+            click() {
+                let node = nodes.get(editingNodeID);
+
+                node.title = $('#node-title').val();
+                for (let button in node.relations) {
+                    if (node.relations[button].nodeID !== null) {
+                        node.relations[button].title = $(`#node-relation-${button}`).val();
+                    }
+                }
+
+                editingNodeID = null;
+                $(this).dialog('close');
+            }
+        }
+    ]
+});
+
+let editingNodeID = null;
+let isDesignMode = true;
+$('#presentation-mode').hide();
 
 const offset = 150;
 
-let nodes = new Nodes(),
-    lines = new Lines();
-nodes.add(new NodeElement(nodes.nextID, 670, 300));
+let nodes = new NodesCollection(),
+    lines = new LinesCollection();
+nodes.add(new NodeItem(nodes.nextID, 670, 300));

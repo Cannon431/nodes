@@ -6,18 +6,33 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="js/libs/jquery-ui-1.12.1.custom/jquery-ui.min.css">
     <script src="js/libs/jquery-3.4.1.min.js"></script>
     <script src="js/libs/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <script src="js/libs/ckeditor_4.11.4_standard_easyimage/ckeditor/ckeditor.js"></script>
+    <script src="js/libs/ckeditor_4.11.4_standard_easyimage/ckeditor/adapters/jquery.js"></script>
     <title>Nodes</title>
 </head>
 <body>
 <button id="mode" onclick="changeMode(event)">Edit mode</button>
-<div id="presentation-mode">
+
+<div id="design-mode">
     <div id="nodes"></div>
     <svg id="lines"></svg>
 </div>
-<div id="edit-mode">
+
+<div id="edit-dialog" title="Node editing">
+    <p><textarea id="node-title"></textarea></p>
+    <p><input type="text" id="node-relation-1" placeholder="Relation 1"></p>
+    <p><input type="text" id="node-relation-2" placeholder="Relation 2"></p>
+    <p><input type="text" id="node-relation-3" placeholder="Relation 3"></p>
+    <p><input type="text" id="node-relation-4" placeholder="Relation 4"></p>
 </div>
+
+<div id="presentation-mode"></div>
+<script>
+    $('#node-title').ckeditor();
+</script>
 <script src="js/script.js"></script>
 </body>
 </html>
